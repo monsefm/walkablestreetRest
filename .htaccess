@@ -1,0 +1,10 @@
+RewriteEngine On
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/lcieunvy/public_html/walkability-rest"
+PassengerBaseURI "/"
+PassengerPython "/home/lcieunvy/virtualenv/public_html/walkability-rest/3.8/bin/python"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+<IfModule Litespeed>
+</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END

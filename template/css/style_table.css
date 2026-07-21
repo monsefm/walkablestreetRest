@@ -1,0 +1,184 @@
+*{
+    font-family: Raleway; 
+    font-style: normal;
+    padding: 0;
+    margin: 0;          
+  } 
+  
+  body{
+    min-height: 100vh;
+  }
+  .aside-style{
+    padding: 0 1.5rem!important;
+    background-color: #001968!important;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100vh !important;
+}
+
+.logo_new{
+  max-width: 245px;
+  min-width: 100px;
+}
+
+.user_seccion{
+  width:100%!important;
+  margin-bottom: 1rem;
+  text-align: right !important;
+}
+
+.main-style{
+    padding: 1rem 4rem!important;
+    background-color: #f5f5f5;       
+  }  
+  
+  .logo-section{
+    padding: 1rem 0rem!important;
+  }
+  .walky{
+    width: 100%;
+    min-height: 96px;
+    height: 14vh;
+    max-height: 150px;   
+  }
+  .logo-title{
+    font-weight: bolder;
+    font-size: calc(0.222vw + 23px);
+    color: #FFFFFF;
+    text-align: center;
+  }
+  
+  .search-section{
+    margin: 1rem 0rem 0 0rem;
+  }
+  .no-margin{
+    margin: 0!important;
+    padding:0!important;
+  }
+  
+  .form-label{
+    color: #20CE88;
+  }     
+  
+  .form-select{       
+    padding: .3rem .75rem!important;
+    width: 100%!important;      
+  }
+  
+  table{
+    font-size: .9rem;
+   }
+  
+  .hidden-column{
+      display: none!important;
+  }
+  .header-colums{
+    background-color: #001968;
+    color: #20CE88;
+    
+  }    
+  
+  .footer-section{
+    margin: 1rem 0rem 1rem 0rem;
+  }
+  .walk21{       
+    width: 100%;        
+    min-height: 35px;
+    height: 5vh;
+    max-height: 45px;
+  }
+  
+  .instructions{
+    color:#001968;
+    font-weight: bolder!important;
+  }
+  
+  /*.icon-image, .noicon-image{
+    height: 45px;
+  }*/
+  
+  .card{
+    border:none!important;
+    padding: 0!important;  
+  }
+  
+  .icon-image-modal{
+    height: 60px;
+    margin: auto auto;
+  }
+  
+  .noicon-image{
+    padding: 0.1rem 0;
+  }
+  
+  .icon-text-modal{
+  font-size: calc(0.222vw + 10px);
+  color: #001968;
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+  text-align: center;
+  }
+  
+  .icon-image, .noicon-image{
+    height: 45px!important;
+  }
+  
+  .modal-header{
+    background-color: #001968;
+  }
+  .modal-title{
+    font-weight: bold;
+    color: #20CE88;
+  }
+  
+  #modal_checkbuttons.modal-body{
+    overflow-y: scroll;
+    height: 180px;
+  }
+ 
+  
+  .logout a{
+    font-weight: bold;
+    color: #20CE88!important;
+  }
+  .logout a:link, .logout a:active{
+    text-decoration: none!important;
+  }
+  .logout a:hover{
+    color: white;
+  }
+  
+
+/* Cambios según tamaño de dispositivo */			
+@media screen and (max-width: 767px) {		
+  .main-style-big{
+    padding: 0rem 1rem 2rem 1rem!important;    
+  }
+  #button_section{
+    text-align: center!important;
+  } 
+}
+@media screen and (max-width: 1171px) {		
+  .btn-search, .btn-search:hover{
+    width: 85%!important;    
+  }  
+}
+
+@media screen and (max-width: 1026px) {		
+  .btn-search, .btn-search:hover{
+    width: 100%!important;    
+  }  
+}
+
+@media screen and (max-width: 992px) {		
+  .btn-search, .btn-search:hover{
+    width: 85%!important;    
+  }  
+}
+
+@media screen and (max-width: 767px) {		
+  .btn-search, .btn-search:hover{
+    width: 90%!important;    
+  }  
+}

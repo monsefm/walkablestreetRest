@@ -1,0 +1,248 @@
+{% extends 'body.html' %}
+{% load static %}
+{% block head %}
+  <link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+  <link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style_user.css' %}">
+
+  <script>
+    $(document).ready(function(){
+     
+    AOS.init();      
+    cargarTooltip();   
+ 
+      //Datatable
+     $('#table_users').DataTable({
+       /*'responsive'	: true,
+       'paging'	: true,
+       'ordering'	: true,
+       'order'		: [],
+       'searching'	: true,
+       'info'		: true,
+       'colReorder'	: true,*/
+       language: {
+                   url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/en-GB.json'            
+       },
+       columnDefs: [
+                 {
+                     target: 1,
+                     searchable: false,
+                 } ,
+                 {
+                     target: 8,               
+                     searchable: false,
+                 }            
+             ],
+     });
+
+     $(".multi_delete").attr("disabled", "disabled");
+     $('.custom-control-input').click(function() {
+        var cant_checked = 0;
+        $(".custom-control-input:checked").each(function(){
+            cant_checked++;
+        });
+        if (cant_checked > 0) {
+            $(".multi_delete").removeAttr("disabled");
+        } else {
+            $(".multi_delete").attr("disabled", "disabled");
+        }
+      });
+
+      $(".uncheck_users").click(function(){
+        $(".custom-control-input").prop("checked", false);
+        $(".multi_delete").attr("disabled", "disabled");
+      });
+     
+      $('.delete_button').click(function(){
+          var var0 = $(this).data('var0');
+          var var1 = $(this).data('var1');
+          
+          showModal(var0, var1);
+      });
+
+      $('.update_button').click(function(){
+          var var0 = $(this).data('var0');        
+          
+          window.location.replace("/user_form/?id=" + var0);   
+      });
+
+      $('.create_button').click(function(){          
+          
+          window.location.replace("/user_form/");   
+      });
+
+      $('.multi_delete').click(function(){
+          showModal('', '');
+      });
+   
+    });
+ </script>
+
+{% endblock %}
+{% block content %}
+  <div class="main-style-big">    
+
+    <div class="text-center"><h1 ><strong>WalkUser Management</strong></h1></div>            
+    <hr><br>
+    <div id="button_section">
+    	<button type="button" class="btn btn-success create_button mx-1" data-placement="top">Create new User <i class="fas fa-plus"></i></button> 
+    	<button type="button" class="btn btn-danger multi_delete mx-1" data-placement="top">Delete checked users <i class="fas fa-trash"></i></button> 
+    	<button type="button" class="btn btn-secondary uncheck_users mx-1" data-placement="top">Uncheck users <i class="far fa-circle"></i></button> 
+    </div>
+	   <div class="table-responsive mt-5" data-aos="fade-down"  data-aos-duration="900">
+              <table id="table_users" class="table table-hover" style="width:100%;">
+                <thead class="header-colums">
+                  <tr class="header-title">                    
+                    <th>N°</th>
+                    <th>#</th>
+                    <th class="word-checking" >Username</th>
+                    <th class="word-checking sizecol-md" >Email</th>
+                    <th>Profile</th>
+                    <th class="sizecol-md" >Date Joined</th>
+                    <th>Walks</th>
+		    <th>Points</th>
+		    <th class="text-center sizecol-sm">Actions</th>    
+                  </tr>      
+                </thead>
+                <tbody>
+                  {% for data in dataset %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>  
+                    <td> 
+                      <div class="custom-control custom-switch ">
+                        <input type="checkbox" class="custom-control-input" id="customSwitch{{data.id}}" value="{{data.id}}">
+                        <label class="custom-control-label" for="customSwitch{{data.id}}"></label>
+                      </div>                      
+                    </td>                                      
+                    <td class="word-checking" >{{ data.username }}</td>   
+                    <td class="word-checking sizecol-md" >{{ data.email }}</td>          
+                    <td>{{ data.profile }}</td>
+                    <td class="sizecol-md" >{{data.date_joined}}</td>
+		    <td>{{ data.walks}}</td>                   
+                    <td>{{ data.points}}</td>           
+                    <td class="sizecol-sm" style="text-align:center;">
+                        <button type="button" class="btn btn-sm btn-danger delete_button mx-1" title="Delete" data-var0="{{ data.id }}" data-var1="{{ data.username }}"><i class="fas fa-trash"></i></button>
+                        <button type="button" class="btn btn-sm btn-primary update_button mx-1" title="Update" data-var0="{{ data.id }}" ><i class="fas fa-edit"></i></button>  
+		              </td> 
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>   
+  </div>
+  <!-- Cargando -->
+  <div id="overlay-loader">
+    <div id="loader-img"><img id="walky-loader" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+    <div id="loader"></div>
+    <div id="loader-message">Loading...</div>
+  </div> 
+     <!-- Modal -->
+     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header alert-danger" >
+            <h5 class="modal-title" id="userModalLabel">User Delete</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body text-center">           
+          </div>
+          <div class="modal-footer">            
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>    
+            <button id="user_delete" type="button" data-var0="" class="btn btn-danger" onclick="deleteUser()">Delete</button>        
+          </div>
+        </div>
+      </div>
+    </div>
+  {% block javascript %}
+  <script type="text/javascript">
+    function showModal(id, username){
+      console.log("showModal");
+      var html = "";
+      var delete_data = "";
+      if(id){
+        html = `<div class="mt-3"><i style="color:#dc3545;" class="fas fa-user-times fa-3x"></i>
+              <p class="mt-3">Are you sure you want to delete the user: <strong>${username}</strong>? This action cannot be undone.</p></div>`;
+        delete_data = id;
+      }
+      else{
+        var idList = new Array()
+        var extra_text = '';
+        var cant = 0;
+          $(".custom-control-input:checked").each(function(){
+            idList.push($(this).val());
+          });
+          cant = idList.length;
+          extra_text = (cant > 1)?cant + ' users':'one user';
+          html = `<div class="mt-3"><i style="color:#dc3545;" class="fas fa-user-times fa-3x"></i>
+              <p class="mt-3">Are you sure you want to delete <strong>${extra_text}</strong>? This action cannot be undone.</p></div>`;
+          var comaSeparated = idList.join(",")
+          delete_data = comaSeparated;
+      }
+      $('#userModal .modal-body').html(html);
+      $('#user_delete').data('var0',delete_data)     
+     
+      $('#userModal').modal('show');      
+      
+     
+    }
+    function deleteUser(){    
+
+      var id = $('#user_delete').data('var0');
+      
+      if(String(id).indexOf(',') == -1){
+        //single
+        parameters = {  id : id }
+      }
+      else{
+        parameters = {  d : id }
+      }
+
+     
+      $.ajax({
+          type: "POST",
+          url: "{% url 'user_delete' %}",
+          data: parameters,
+          success: function(response){            
+            
+            $('#userModal').modal('hide');
+            if(response.status == 'success'){
+                window.location.replace("/user_list/");                              
+            }
+            else{
+              showMessage("error",response.message);               
+              return;
+            }
+          },
+          error: function(e){              
+            $('#userModal').modal('hide');
+           
+            console.log(e);
+            showMessage("error",e.statusText)          
+
+          }
+
+      });
+     
+      
+      
+
+    } 
+    
+  </script>
+   {% if messages %}
+   {% for m in messages %}
+       <script> 
+       showMessage("{{m.tags}}","{{m}}");  
+       </script>
+   {% endfor %}
+   {%  endif %}
+  {% endblock %}        
+{% endblock %}
+

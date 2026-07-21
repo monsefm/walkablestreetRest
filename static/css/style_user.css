@@ -1,0 +1,21 @@
+table{
+    font-size: .9rem;
+}
+
+.sizecol-sm{
+ width: 10%!important;
+}
+
+
+.sizecol-md{
+ width: 20%!important;
+}
+
+.word-checking{
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}

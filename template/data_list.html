@@ -1,0 +1,597 @@
+{% extends 'body.html' %}
+{% load static %}
+
+{% block head %}
+
+
+
+<link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+<script src="{% static 'lib/plugins/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'lib/plugins/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+  <link rel="stylesheet" href="{% static 'css/style_table.css' %}">
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+
+<style>
+  .btn-search{
+    width: 65%;
+    border: 3px solid #001968;
+    background-color: transparent;
+    color: #001968;
+  }
+  
+  .btn-search:hover{
+    width: 65%;
+    border: 3px solid #001968;
+    background-color: #001968;
+    color: #FFFFFF;
+  }
+  
+  .btn-extra{          
+    border-radius: 24px;
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: calc(0.222vw + 12px);
+  }
+  .btn-look{        
+    border-radius: 24px;
+    font-weight: bold;  
+    font-size: calc(0.222vw + 12px);
+    border: 3px solid #8912B1;
+    background-color: transparent;
+    color: #8912B1;
+    margin: auto auto;
+  }
+  
+  .btn-look:hover{   
+    color: #FFFFFF;
+    border: 3px solid #8912B1;
+    background-color: #8912B1;
+  }
+
+  .btn-comment{
+    border-radius: 24px;
+    font-weight: bold;
+    font-size: calc(0.222vw + 12px);
+    border: 3px solid #001968;
+    background-color: transparent;
+    color: #001968;
+    margin: auto auto;
+  }
+
+  .btn-comment:hover{
+    color: #FFFFFF;
+    border: 3px solid #001968;
+    background-color: #001968;
+  }
+
+  #icon_content .card{
+    box-shadow: none !important;
+    margin-bottom: 0!important;
+  }
+  .more-size{
+    padding: .4rem .75rem !important;
+  }
+
+  .col-space{
+    padding-right: 3em!important;
+    padding-left: 3em!important;
+  }
+  .search-section {
+    margin: 1em 0em;
+    font-size: .9rem!important;
+    /*background-color: #001968;*/
+    padding: 1em;
+    border: solid 2px #001968;
+    border-radius: 10px;
+  }
+  .form-label{
+    color: #001968!important;
+  }
+  
+  @media screen and (max-width: 1171px) { .btn-search, .btn-search:hover{ width: 85%!important;  } }
+  @media screen and (max-width: 1026px) { .btn-search, .btn-search:hover{ width: 100%!important; } }
+  @media screen and (max-width: 992px) { .btn-search, .btn-search:hover{ width: 85%!important; } }
+  @media screen and (max-width: 767px) { .btn-search, .btn-search:hover{width: 90%!important; } }
+
+  </style>
+<script>
+  $(document).ready(function(){
+
+
+    AOS.init();
+     
+    $('#overlay-loader').fadeOut('400');           
+
+    $('[data-tooltip="tooltip"]').tooltip();
+
+    $(".check_icons").click(function(){  
+
+      var id_data = $(this).data('var1');
+
+      $.ajax({
+        type:'GET',
+        url: "{% url 'geticons' %}",
+        data: {"id_data":id_data},
+        success: function(response){ 
+                         
+          $('#modal_checkbuttons_title').html(`Button list - ID Data: ${id_data}`);
+
+          var html = "";
+
+          $('#modal_checkbuttons_body').css("height","180px");
+          if(response.icon_data.length > 3){
+            $('#modal_checkbuttons_body').css("height","320px");
+          }
+
+          $.each(response.icon_data, function(index, icon){
+              console.log(icon);
+              html = html +  `<div class="col-sm-4 card" style="width:6rem;">
+                              <img src="${icon.image}" class="card-img-top icon-image-modal" alt="${icon.tag}">
+                              <div class="card-body">
+                                <p class="card-text icon-text-modal">${icon.description}</p>
+                              </div>
+                              </div>`;
+          });              
+          $('#icon_content').html(html);            
+          $('#modal_checkbuttons').modal('show');
+        },
+        error: function(response){
+            console.log(response)
+        }
+      });             
+    });
+
+
+    $(".view_comment").click(function(){  
+
+      var id_data = $(this).data('var0');
+      var comment = $(this).data('var1');
+
+      $('#modal_comment_title').html(`Comment - ID Data: ${id_data}`);
+      var html = "";
+
+      html = `<p class="comment-text">${comment}</p>`;
+      $('#comment_content').html(html);            
+      $('#modal_comment').modal('show');  
+
+    });
+
+
+//Datatable
+$('#table_data').DataTable({
+  //'responsive'	: true,
+  'paging'	: true,
+  'ordering'	: true,
+  'order'		: [],
+  'searching'	: true,
+  'info'		: true,
+  'colReorder'	: true,
+  language: {
+               url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/en-GB.json'            
+  },
+  columnDefs: [
+            {
+                target: 0,
+                visible: false,
+                searchable: false,
+            } ,
+            {
+                target: 8,               
+                searchable: false,
+            }            
+        ],
+});
+
+    $(".multi_delete").attr("disabled", "disabled");
+     $('.custom-control-input').click(function() {
+        var cant_checked = 0;
+        $(".custom-control-input:checked").each(function(){
+            cant_checked++;
+        });
+        if (cant_checked > 0) {
+            $(".multi_delete").removeAttr("disabled");
+        } else {
+            $(".multi_delete").attr("disabled", "disabled");
+        }
+      });
+
+      $(".uncheck_users").click(function(){
+        $(".custom-control-input").prop("checked", false);
+        $(".multi_delete").attr("disabled", "disabled");
+      });
+
+      $('.multi_delete').click(function(){
+          showModal();
+      });
+
+      function showModal(){     
+      var html = "";
+      var delete_data = "";
+ 
+        var idList = new Array()
+        var extra_text = '';
+        var cant = 0;
+          $(".custom-control-input:checked").each(function(){
+            idList.push($(this).val());
+          });
+          cant = idList.length;
+          extra_text = (cant > 1)?cant + ' data points':'one data point';
+          html = `<div class="mt-3"><i style="color:#dc3545;" class="fas fa-user-times fa-3x"></i>
+              <p class="mt-3">Are you sure you want to delete <strong>${extra_text}</strong>? This action cannot be undone.</p></div>`;
+          var comaSeparated = idList.join(",")
+          delete_data = comaSeparated;
+      
+      $('#dataModal .modal-body').html(html);
+      $('#data_delete').data('var0',delete_data)    
+     
+      $('#dataModal').modal('show');  
+     
+    }
+    
+    
+});   
+</script>
+{% endblock %}
+{% block content %}
+<div class="main-style-big">
+  <div class="text-center"><h1 ><strong>Data points from Walks</strong></h1></div>            
+  <hr><br>
+  <div class="row instructions d-flex align-items-center">      
+    <div class="col-sm-12 col-md-1 d-flex justify-content-center no-margin"><i class="fa fa-bullhorn fa-2x"></i></div>
+    <div class="col-sm-12 col-md-11 no-margin"><h6>Important Note: If you want to show all the dataset, you must clean the form fields before pressing the search button!</h6></div>
+  </div>  
+  <div class="row search-section">
+    <div class="col-12 ">               
+      {% block buscador %}            
+          <form class="navbar-search" method="GET">
+              {% csrf_token %}
+<div class="row mb-4">                
+             </div>
+              <div class="row">
+                  <div class="col-sm-12 col-md-4 col-space">
+                      <div class="form-group">
+                          <label for="user_option" class="form-label">Username</label>
+                          <select class="form-select" name="user_option" id="user_option">
+                              <option value="" selected>Choose a user...</option>   
+                              {% for user in userlist%}
+                                  <option value="{{user.id}}" >{{user.username}}</option>   
+                              {% endfor%}                                 
+                          </select>
+                      </div>                               
+                  </div>                                                      
+                  <div class="col-sm-12 col-md-4 col-space">                                
+                      <div class="form-group">
+                        <label for="from_option" class="form-label">From Date</label>  
+                        <input id="from_opt" class="form-control form-control-sm" type="text" name="from_opt" value="" />                     
+                       
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md-4 col-space">
+                      <div class="form-group">
+                          <label for="to_option" class="form-label">To Date</label><br>   
+                          <input id="to_opt" class="form-control form-control-sm" type="text" name="to_opt" value="" />     
+                      </div>                               
+                  </div>                            
+                  <div class="col-sm-12 col-md-4 col-space">
+                      <div class="form-group">
+                          <label for="perception_option" class="form-label">Perception</label>
+                          <select class="form-select" name="perception_option" id="perception_option">
+                              <option value="" selected>Choose a perception...</option> 
+                              <option value="green" >Good</option> 
+                              <option value="yellow" >Concern</option> 
+                              <option value="red" >Problem</option>   
+                                                          
+                          </select>
+                      </div>
+                  </div>
+		  <div class="col-sm-12 col-md-4 col-space">
+                    <div class="form-group">
+		    	<label for="country_option" class="form-label">Country</label>
+                        <select class="form-select" name="country_option" id="country_option">
+                            <option value="" selected>Choose a country...</option>
+                            {% for c in countrylist %}
+			    	                  {% if c.name %}
+                                	<option value="{{c.iso2}}" >{{c.name}}</option>
+				                      {% endif %}
+                            {% endfor%}
+                        </select>
+		    </div>
+		  </div>
+              </div>
+              <div class="row my-2 d-flex justify-content-center">
+                <div class="col-sm-12 col-md-4 d-flex justify-content-center px-4">
+                  <button class="btn btn-extra btn-search" type="button" onclick="cleanData()">Clean Form <i class="fa fa-eraser"></i></button>
+                </div>
+                <div class="col-sm-12 col-md-4 d-flex justify-content-center px-4">
+                  <button class="btn btn-extra btn-search" type="button" onclick="getData()">Search ></button>  <br>
+                </div>
+                <div class="col-sm-12 col-md-4 d-flex justify-content-center px-4">
+                  <button id="csv_download" data-var0="{{opt}}" type="button" class="btn btn-extra btn-search" onclick="csvSelected('{{ ids_data }}')" >Download <i class="fa fa-download" aria-hidden="true"></i> </button>                                
+                </div>                    
+              </div>            
+          </form>            
+      {% endblock buscador %} 
+    </div>              
+</div>
+<br>
+   <div id="button_section">
+    <button type="button" class="btn btn-danger multi_delete mx-1" data-placement="top">Delete checked points <i class="fas fa-trash"></i></button> 
+    <button type="button" class="btn btn-secondary uncheck_users mx-1" data-placement="top">Uncheck points <i class="far fa-circle"></i></button>  
+   </div> 
+    <div class="table-responsive mt-3" data-aos="fade-down"  data-aos-duration="900">   
+    <table id="table_data" class="table table-hover" style="width:100%;">
+      <thead class="header-colums">
+        <tr class="header-title">
+          <th>#</th>
+          <th>ID</th>
+          <th>Walk</th>
+          <th>User</th>
+          <th>DateTime</th>
+          <th>Latitude</th>
+          <th>Longitude</th>          
+          <th>Perception</th>
+	  <th>City</th>
+	  <th class="text-center" >Comment</th>
+          <th class="text-center">Button</th>                        
+          <!--<th>OPTIONS</th>-->
+        </tr>      
+      </thead>
+      <tbody>
+        {% for data in dataset %}
+        <tr {% if data.perception == 'red' %}class="table-danger"{% endif %}{% if data.perception == 'yellow' %}class="table-warning"{% endif %}{% if data.perception == 'green' %}class="table-success"{% endif %}>  
+          <td>
+            <div class="custom-control custom-switch ">
+              <input type="checkbox" class="custom-control-input" id="customSwitch{{data.id}}" value="{{data.id}}">
+              <label class="custom-control-label" for="customSwitch{{data.id}}"></label>
+            </div>   
+          </td>
+          <td>{{ data.id }}</td>   
+          <td>Walk{{ data.walk_context }}</td>          
+          <td>{{ data.user.username }}</td>
+          <td>{{ data.datetime }}</td>
+          <td>{{ data.latitude }}</td>
+          <td>{{ data.longitude }}</td>          
+          {% if data.perception == 'green' %}
+            <td>Good</td>
+            {% elif data.perception == 'yellow' %}
+            <td>Concern</td>
+            {% elif data.perception == 'red' %}
+            <td>Problem</td>
+            {% else %}
+            <td>{{data.perception}}</td>                      
+          {% endif %}  
+	  <td>{{data.city}} </td>
+	  <td style="text-align:center;">
+            {%  if data.comments %}
+            <button type="button" class="btn btn-comment view_comment" data-toggle="modal" data-var0="{{data.id}}" data-var1="{{data.comments}}" data-tooltip="tooltip" data-placement="top"  title="View comment"><i class="far fa-comment-alt fa-lg"></i></button>             
+            {% else %}
+              None
+            {%  endif %}
+          </td>
+          <td style="text-align:center;">
+            {% if data.cant_button > 1 %}
+              <button type="button" class="btn btn-look check_icons" data-toggle="modal" data-var1="{{data.id}}" data-tooltip="tooltip" data-placement="top"  title="Check buttons"><i class="fa fa-search fa-lg"></i></button>             
+              {% elif data.cant_button == 1 %}
+              {% for icon in data.icon_data %}
+              <img class="icon-image" src="{{icon.image}}" alt="{{icon.tag}}" data-tooltip="tooltip" data-placement="top" title="{{icon.description}}">
+              {%  endfor   %}
+            {% else %}
+            <img class="noicon-image" src="{% static 'images/no_data.svg' %}" alt="no_icon" data-tooltip="tooltip" data-placement="top" title="No icon found">
+            {% endif %}  
+          </td>                         
+          <!--<td><a href="/table/?d={{ data.id }}"><button type="button" class="btn btn-danger">Delete</button></a></td>-->
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div> 
+           
+</div>
+ <!-- Cargando -->
+ <div id="overlay-loader">
+  <div id="loader-img"><img id="walky-loader" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+  <div id="loader"></div>
+  <div id="loader-message">Loading...</div>
+</div> 
+ <!-- Modal -->
+ <div class="modal fade" id="modal_checkbuttons" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-md">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal_checkbuttons_title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal_checkbuttons_body">
+        <div class="container-fluid"><div id="icon_content" class='row d-flex justify-content-around'></div> </div>
+      </div>          
+    </div>
+  </div>
+</div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="dataModal" tabindex="-1" aria-labelledby="dataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header alert-danger" >
+          <h5 class="modal-title" id="dataModalLabel">Data Delete</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body text-center">           
+        </div>
+        <div class="modal-footer">            
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>    
+          <button id="data_delete" type="button" data-var0="" class="btn btn-danger" onclick="deleteData()">Delete</button>        
+        </div>
+      </div>
+    </div>
+  </div>
+
+   <!-- Modal -->
+  <div class="modal fade" id="modal_comment" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modal_comment_title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal_comment_body">
+          <div id="comment_content" class="container"></div>
+        </div>          
+      </div>
+    </div>
+  </div>
+{% block javascript %}
+    <script type="text/javascript">
+     $(function() {
+      $('input[name="from_opt"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true, 
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }       
+      });
+
+      $('input[name="from_opt"]').on('apply.daterangepicker', function(ev, picker) {
+      $(this).val(picker.startDate.format('MM/DD/YYYY'));
+      });
+
+      $('input[name="from_opt"]').on('cancel.daterangepicker', function(ev, picker) {
+          $(this).val('');
+      });
+
+      $('input[name="to_opt"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,   
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }     
+      });
+
+      $('input[name="to_opt"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY'));
+      });
+
+      $('input[name="to_opt"]').on('cancel.daterangepicker', function(ev, picker) {
+          $(this).val('');
+      });
+        
+    });
+    
+
+    function deleteData(){ 
+      var id = $('#data_delete').data('var0'); 
+      
+      //$('#overlay-loader').fadeIn('400');         
+      $.ajax({
+          type: "POST",
+          url: "{% url 'data_delete' %}",
+          data: {  d : id },
+          success: function(response){            
+            
+            $('#dataModal').modal('hide');
+            if(response.status == 'success'){
+                window.location.replace("/data_list/");                              
+            }
+            else{
+              showMessage(response.status,response.message);               
+              return;
+            }
+          },
+          error: function(e){              
+            $('#dataModal').modal('hide');
+          
+            console.log(e);
+            showMessage("error",e.statusText)    
+          }
+      });
+      } 
+                
+
+      function csvSelected(my_array) {  
+        //loading  
+        $('#overlay-loader').fadeIn('400');               
+        var clean = my_array.slice(1, my_array.length-1)
+        var clean_array = clean.replace(/ /g, "");
+        var opt = $('#csv_download').data('var0');
+        
+        $.ajax({
+          type:'POST',
+          url: "{% url 'csv_file' %}",
+          data: {"csv":clean_array, "opt": opt},
+          xhrFields: {
+              responseType: 'blob'
+          },
+          success: function(request){                              
+              var d = new Date();
+              var date_now = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDay()+"_"+d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+              var a = document.createElement("a");
+              document.body.appendChild(a);
+              a.style = "display: none";
+              const blob = new Blob([request], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+              const url = URL.createObjectURL(blob);
+              a.href = url;
+              a.download = "Data-" + date_now + ".csv";
+              a.click();
+              window.URL.revokeObjectURL(url);
+              $('#overlay-loader').fadeOut('400');
+              console.log(request)
+          },
+          error: function(err){
+              console.log(err);
+              $('#overlay-loader').fadeOut('400');
+          }            
+        });    
+      }
+
+      function getData(){  
+        
+        //loading
+          $('#overlay-loader').fadeIn('400');  
+
+          var user = $("#user_option").val();
+          var from = $("#from_opt").val();
+          var to = $("#to_opt").val();
+          var perception = $("#perception_option").val();
+	        var country =  $("#country_option option:selected").val();
+          
+          $('#csv_download').data('var0','1');               
+          var search = user+'|'+from+'|'+to+'|'+perception+'|'+country;
+	        window.location.replace("/data_list/?search=" + search + '&opt=1');
+      }
+
+
+    function cleanData(){          
+        $("#user_option").val('');
+        $("#from_opt").val('');
+        $("#to_opt").val('');
+        $("#perception_option").val('');
+	$("#country_option").val('');
+      }
+      
+    </script>
+     {% if messages %}
+     {% for m in messages %}
+         <script> 
+         showMessage("{{m.tags}}","{{m}}");  
+         </script>
+     {% endfor %}
+     {%  endif %}
+    {% endblock %}
+{% endblock %}
+

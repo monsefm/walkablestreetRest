@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkability</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{%  static 'favicon.ico' %}"> 
+  {% include '../include/libs.html' %}
+  {% block lib %}     
+  {% endblock lib %}
+    <style>
+      
+    html,
+    body{
+        height: 100%;
+        margin: 0;
+        max-width: 100%;
+      
+        background-color:#485b97;
+    }
+    
+    .btn-link:hover{            
+        border: 3px solid #20CE88!important;
+        background-color: #20CE88!important;
+        color: #FFFFFF!important;
+        text-decoration: none!important;
+    }
+    /*.text-center{
+        text-align: center!important;
+    }
+
+    .text-justify{
+        text-align: justify!important;
+    }*/
+    .main-text{
+        margin:0rem 1.8rem;
+    }
+
+   /* .logo-footer2{
+        width:100%;
+    }
+    .icon-space{
+        margin: 0vw 2.8vw;
+    }*/
+
+    /* Cambios según tamaño de dispositivo */			
+	@media screen and (max-width: 1439px) {		
+		.main-text{ margin:0rem 0rem!important; }
+    }
+	
+    </style> 
+    {% block style %}
+    {% endblock %}
+</head>
+<body  style="background-color:#485b97;">
+  
+    {% block content %}
+ 
+    {% endblock %}    
+</body>
+</html>
+

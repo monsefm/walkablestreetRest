@@ -1,0 +1,210 @@
+*{
+    font-family: Raleway!important; 
+    font-style: normal;    
+  } 
+
+
+.row{margin: 0 !important;}
+
+.container-fluid {
+    padding: 0!important;
+    margin: 0!important;
+    background: #001968 !important;    
+}
+
+.main_div{
+    padding: 2rem!important;
+    /*position: absolute;
+    left: 40px;
+    top: 50px;
+    width: 65%;*/
+}
+.main-title{
+    
+    font-weight: bold;
+    font-size: calc(2.2vw + 18px);
+    color: #FFFFFF;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    margin-top: 2vh;
+} 
+
+.line_xl{
+    background: #20CE88;
+    height: 5px;
+    width: 20%;
+    margin: 0;
+}
+
+.login_style{
+    height: calc(100vh); 
+}
+
+.img_div{
+    text-align: center;
+    margin: 2em 0;
+}
+
+.col_image{
+   /* position: relative; */
+    padding: 0!important;
+    width: 100%;
+    /*height: 100vh!important; */
+    align-items: center;
+    justify-content: center;
+    background-image: url("http://walkability.cedeus.cl/_nuxt/img/login.7da7990.png");
+    background-position: center;
+    background-repeat: no-repeat;    
+    background-size: cover;
+    /*display: flex;*/
+}
+
+
+.col_image::before {
+    content: "";
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background-color: rgba(0,25,104,0.8);
+}
+
+.img-fluid{
+    /*position: relative;
+    z-index: 100!important;*/
+    width: 58vh!important;
+    margin: 5vh 0!important;
+}
+
+.col_form{
+    align-self: end;
+    justify-content: center;
+    text-align: center;
+    display: flex!important;
+    flex-direction: column !important;
+    background: #001968 !important;
+    height: 100vh;
+    
+
+}
+
+.walky{
+    width: 100%;
+    min-height: 96px;
+    height: 14vh;
+    max-height: 150px;
+    margin-top:9vh;
+}
+  
+
+.name{
+    font-weight: 700 !important;
+    font-size: calc(0.222vw + 23px);
+    color: #FFFFFF;
+    margin-bottom: 8vh;
+    /*margin-top: 20vh;*/
+}
+.subtitle-box{
+    width: 65%;
+    text-align: initial !important;
+    margin: auto;
+}
+
+.subtitle{
+    margin: 0 0 1rem;
+    font-weight: 400;
+    font-size: calc(0.222vw + 20px);
+    color: #FFFFFF;
+}
+       
+.line{
+    background: #20CE88;
+    height: 2px;
+    width: 15%;
+    margin: 0;
+}
+
+.btn-login{
+    border: 3px solid #20CE88;
+    background-color: transparent;
+    color: #20CE88;
+    width: 65%;
+    border-radius: 24px;
+    font-weight: bold;
+    /*margin-bottom: 10vh;*/
+    font-size: calc(0.222vw + 12px);
+    padding: 0.5rem 0;
+}
+
+.btn-login:hover{            
+    border: 3px solid #20CE88;
+    background-color: #20CE88;
+    color: #FFFFFF;
+}
+
+.form-control{
+    width: 65%!important;
+    color: white !important;
+    background-color: #001968  !important;   
+    margin: 1rem auto;
+    border: none !important;
+    border-bottom: 1px solid white!important;
+    border-radius: 0!important;
+    padding: 0;
+    font-size: calc(0.222vw + 14px);
+
+}
+
+.form-control:focus{    
+    box-shadow: none !important;            
+    border-bottom: 1px solid white;
+    outline: none !important;
+    background-color: #001968!important;
+}
+
+.form-control::placeholder{
+    color: white !important;
+    font-size: calc(0.222vw + 14px);
+    background-color: #001968!important;
+}
+
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active{
+    -webkit-box-shadow: #001968 !important;
+    -webkit-text-fill-color: #001968 !important;
+}
+
+.feedback{
+    font-size: calc(0.222vw + 10px);
+    font-weight: bold;
+    color: #BC31EA;
+    margin: 1rem auto;
+    height: 61px;    
+}
+.feedback p{
+    margin: 0 5.3vw;
+}             
+   
+.footer_style{   
+    margin: 10vh auto 8vh !important;
+    position: relative;
+    bottom: 0;
+    /*left: 14%;
+    width: 100%;
+    margin-bottom: 3vh;
+    min-height: 35px;*/
+}
+
+.icon-space{
+    margin: 0vw 1.5vw;
+}
+
+input{ background-color: #001968 !important;}
+      
+@media only screen and (max-width: 910px) {
+    .img-fluid{
+        padding-left: 5vw;
+        padding-right: 5vw;
+    }
+} 
+

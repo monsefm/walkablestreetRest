@@ -1,0 +1,305 @@
+{% extends 'body.html' %}
+{% load static %}
+{% block head %}  
+
+    <!-- Bootstrap4-toggle switch-->
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+  <link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+  <link rel="stylesheet" href="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+  <script src="{% static 'lib/plugins/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+
+
+  <script>
+    $(document).ready(function(){
+     
+      AOS.init();      
+      $(function(){ $('#send_email').bootstrapToggle({
+        on: 'Send',
+        off: 'No send'
+      }) });
+     
+      checkProfile('#selectprofile');
+      
+      $('.back_button').click(function(){
+          var var0 = $(this).data('var0'); 
+
+          window.location.replace("/user_list/");  
+      });
+
+      $('#selectprofile').change(function(){
+            if($(this).val() == 'contributor'){
+                $('#country').val('');
+                $('#country').prop('disabled', 'disabled');
+               // alert( $('#country').prop('disabled'))
+            }
+            else{
+                $("#country").removeAttr("disabled");
+                //alert( $('#country').prop('disabled'))
+            }
+      }); 
+
+   
+    });
+ </script>
+
+{% endblock %}
+{% block content %}
+  <div class="main-style-big">    
+
+    <div class="text-center"><h1 ><strong>{{title_template}}</strong></h1></div>            
+    <hr><br> 
+    <div class="mt-5 form-style-space" data-aos="fade-down"  data-aos-duration="900">
+        <form id="form_user" method="POST">
+            {% csrf_token %}
+            <div class="form-row">                   
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputusername">Username <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="username" data-var0="{{ wuser.username }}" value="{{ wuser.username }}" >
+                </div>
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputemail">Email</label>
+                    <input type="email" class="form-control" id="email" value="{{ wuser.email }}">
+                </div> 
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputPassword">Password <span class="required">*</span></label>
+                    <input type="password" class="form-control" id="password" data-var0="{{ wuser.password }}" value="{{ wuser.password }}" >
+                </div>
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputphone">Phone</label>
+                    <input type="text" class="form-control" id="phone" value="{{ wuser.celphone }}">
+                </div>
+                              
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputgorup">Walk group</label>
+                    <select id="walkgroup" class="form-control">
+                        <option value="" selected>Choose...</option>
+                        {% for group in list_group %}
+                            <option value="{{group.id}}" {% if group.id == wuser.walkgroup.id %} selected {% else %} {% endif %} >{{group.tag}}</option>
+                        {% endfor %}
+                    </select>
+                </div>                
+            
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputprofile">Profile <span class="required">*</span></label>
+                    <select id="selectprofile" class="form-control" >
+                        <option value="">Choose...</option>
+                        <option value="contributor" {% if wuser.profile == 'contributor' %} selected {% else %} {% endif %}>Contributor</option>
+                        <option value="licensed" {% if wuser.profile == 'licensed' %} selected {% else %} {% endif %}>Licensed</option>
+                      </select>
+                </div>
+		<div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="inputcountry">Licensed Country</label>
+                    <select id="country" class="form-control">
+                        <option value="N/C" data-var0="N/C" {% if wuser.country == 'N/C' or action == 'create'  %} selected {% endif %} >Choose...</option>
+                        <option value="global" data-var0="global" {% if  wuser.country == 'global' and action == 'update'  %} selected {% endif %} >Global</option>
+                        {% for country in list_countries %}
+                        <option value="{{country.name}}" data-var0="{{country.iso2}}" {% if wuser.countryCode == country.iso2 and action == 'update' %} selected {% endif %} >{{country.name}}</option>
+                        {% endfor %}
+                      </select>
+                </div>
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" for="acceso_label">Privileges</label> 
+                    <select id="privileges" class="form-control">
+                        <option value="" >Choose...</option> 
+                        {% if user.is_superuser or  user.is_staff %}     
+                        <option value="staff" {% if wuser.is_staff == True %} selected {% endif %} >Staff</option>
+                        {% endif %}
+                        {% if user.is_superuser %}    
+                        <option value="super_user" {% if wuser.is_superuser == True %} selected {% endif %} >Super user</option>
+                        {% endif %}                      
+                    </select>                 
+                </div>  
+                {% if action == 'create' %}
+                <div class="form-group col-sm-12 col-md-4 form-group-style">
+                    <label class="form-label" to="send_email">Send Email</label><br>                   
+                    <input id="send_email" type="checkbox" data-toggle="toggle" data-on="<i class='fas fa-envelope'></i> Yes" {% if action == 'create' %} checked {% endif %} >
+                   
+                </div>  
+                {% endif %}    
+            </div>            
+            <div class="form-row" style="margin-top: 2rem;">
+                <div class="form-group col-sm-12 form-group-style">                      
+                    <button type="button" onclick="SubmitForm()" {% if action == 'create' %}class="btn btn-success" {% else %} class="btn btn-primary" {% endif %} >{{ action | capfirst }}</button>         
+                    <button type="button" class="btn btn-secondary" onclick="back('/user_list/')">Cancel</button>
+                </div>
+            </div>
+        </form>   
+                  
+    </div>   
+  </div> 
+   <!-- Cargando -->
+ <div id="overlay-loader">
+    <div id="loader-img"><img id="walky-loader" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+    <div id="loader"></div>
+    <div id="loader-message">Loading...</div>
+  </div> 
+   
+  {% block javascript %}
+  <script type="text/javascript">   
+
+    function SubmitForm(){
+       
+        var username =      $('#username').val();       
+        var email =         $('#email').val();
+        var password =      $('#password').val();
+        var phone =         $('#phone').val();
+        var walkgroup =     $('#walkgroup').val();
+        var profile =       $('#selectprofile').val();
+        var country =       $('#country option:selected').val();
+	var countryCode =   $('#country option:selected').data('var0');   
+        var privileges =    $('#privileges').val();
+
+        var old_user =      $('#username').data('var0');
+        var action =        '{{action}}';
+        var button_send =   $('#send_email').prop('checked');
+       
+        var error_message = "";
+        var v_error = [];
+        var error_cont = 0;
+        var pass_changed = false;
+        var check_username = -1;        
+
+        if(!username){ 
+            v_error.push('username'); error_cont++;  $('#username').addClass('data_required'); 
+        }
+        else{
+            $('#username').removeClass('data_required');
+            if(username !== old_user){ 
+
+                $.ajax({   
+                    type: 'GET',
+                    url: "{% url 'username-check' %}",
+                    data: {username:username, old_username:old_user},
+                    async: false,		 
+                    success: function(response){
+                        
+                        if(response.status == 'success'){check_username = 1;}
+                        else{ check_username = 0; }                       
+                    },
+                    error: function(e){                      
+                        console.log(e)	
+                        check_username = 0;		
+                    }
+                });          
+            }
+            else{ check_username = 1;  }    
+            (check_username == 1)?$('#username').removeClass('data_required'):$('#username').addClass('data_required');        
+        }
+        if(!password){ v_error.push('password'); error_cont++; $('#password').addClass('data_required'); }else{$('#password').removeClass('data_required');}
+        if(!profile){ v_error.push('profile'); error_cont++; $('#selectprofile').addClass('data_required');}else{$('#selectprofile').removeClass('data_required');}
+               
+        if(username && check_username == 1 && password && profile){   
+            var url_action;
+            var parameters;
+           
+            if(action == 'update'){
+                if(password != $('#password').data('var0')){pass_changed = true;}
+                url_action = "{% url 'user_update' %}";
+
+                parameters = {
+                            id: '{{wuser.id}}',
+                            username: username,
+                            email: email,
+                            password: password,
+                            phone: phone,
+                            walkgroup: walkgroup,
+                            profile: profile,
+                            country: country,
+			    countryCode: countryCode,
+                            privileges: privileges,
+                            pc:pass_changed                           
+                }
+            }
+            else{
+                url_action = "{% url 'user_create' %}";                
+                parameters = {                            
+                            username: username,
+                            email: email,
+                            password: password,
+                            phone: phone,
+                            walkgroup: walkgroup,
+                            profile: profile,
+                            country: country,
+			    countryCode: countryCode,
+                            privileges: privileges,
+                            send: button_send
+
+                }
+            }            
+                
+            $('#overlay-loader').fadeIn('400');
+                
+                $.ajax({               
+                    type: 'POST',
+                    url: url_action,
+                    data: parameters,
+                    success: function(response){
+                        console.log(response);
+                        if(response.status == 'success'){
+                            window.location.replace("/user_list/");                              
+                        }
+                        else{
+                        showMessage("error",response.message);               
+                        return;
+                        }
+                    },
+                    error: function(error){
+                        console.log(e);
+                        showMessage("error",e.statusText)   
+                    },
+                    finally:function(){
+                        $('#overlay-loader').fadeOut('400');
+                    }
+                });    
+            
+               
+        }
+        else{
+            if(v_error.length > 0){
+                var first = v_error[0];
+                v_error[0] = first.charAt(0).toUpperCase() + first.slice(1);
+            }
+
+            for(let i=0; i<v_error.length; i++){
+                 
+                 if(i < v_error.length-1){
+                         if(i == v_error.length-2){error_message=error_message+v_error[i];}
+                         else{error_message=error_message+v_error[i]+", ";}
+                 }
+                 else{
+                     if(v_error.length>1){  error_message=error_message+" and "+v_error[i]+" ";     }
+                     else{
+                             error_message=error_message+v_error[i]+" ";
+                     }
+                     
+                 }
+            }
+            error_message = (error_cont==1)?error_message + 'is required.':error_message + 'are required.';
+            
+            if(check_username == 0){
+                error_message = (error_cont>0)?error_message+" Username already exists. Please try with another one.":"Username already exists. Please try with another one."; 
+            }
+         
+            showMessagent("warning",error_message);  
+            return;
+        }
+
+    }        
+    
+  </script>
+   {% if messages %}
+   {% for m in messages %}
+       <script> 
+       showMessage("{{m.tags}}","{{m}}");  
+       </script>
+   {% endfor %}
+   {%  endif %}
+  {% endblock %}        
+{% endblock %}
+

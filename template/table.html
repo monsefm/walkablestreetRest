@@ -1,0 +1,653 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Walkability</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{%  static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/style_table.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+    {% include './include/libs.html' %} 
+    
+ <style>
+/*
+*{
+  font-family: Raleway; 
+  font-style: normal;
+  padding: 0;
+  margin: 0;          
+} 
+
+body{
+  min-height: 100vh;
+}
+
+.aside-style{
+    padding: 0 2rem!important;
+    background-color: #001968;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+   
+}
+
+.logo_new{
+  max-width: 245px;
+  min-width: 100px;
+}
+
+.user_seccion{
+  width:100%!important;
+  margin-bottom: 1rem;
+  text-align: right !important;
+}
+*/
+.btn-search{
+  width: 100%;
+  border: 3px solid #20CE88;
+  background-color: transparent;
+  color: #20CE88;
+}
+
+.btn-search:hover{
+  width: 100%;
+  border: 3px solid #20CE88;
+  background-color: #20CE88;
+  color: #FFFFFF;
+}
+
+.btn-extra{          
+  border-radius: 24px;
+  font-weight: bold;
+  margin-top: 1rem;
+  font-size: calc(0.222vw + 12px);
+}
+.btn-look{        
+  border-radius: 24px;
+  font-weight: bold;  
+  font-size: calc(0.222vw + 12px);
+  border: 3px solid #8912B1;
+  background-color: transparent;
+  color: #8912B1;
+  margin: auto auto;
+}
+
+.btn-look:hover{   
+  color: #FFFFFF;
+  border: 3px solid #8912B1;
+  background-color: #8912B1;
+}
+/*
+.icon-image, .noicon-image{
+  height: 45px;
+}
+
+.modal-header{
+  background-color: #001968;
+}
+.modal-title{
+  font-weight: bold;
+  color: #20CE88;
+}
+
+.modal-body{
+  overflow-y: scroll;
+  height: 180px;
+}
+table{
+ font-size: .9rem;
+}
+
+.logout a{
+  font-weight: bold;
+  color: #20CE88!important;
+}
+.logout a:link, .logout a:active{
+  text-decoration: none!important;
+}
+.logout a:hover{
+  color: white;
+}*/
+ </style>
+  <script>
+      $(document).ready(function(){
+
+        //for multiple elements:
+        for (const checkbox of document.querySelectorAll('.custom-control-input')) {
+                //iterating over all matched elements
+                    checkbox.checked = true //for selection        
+        }
+        
+        $('#overlay-loader').fadeOut('400');   
+
+        
+        $('[data-tooltip="tooltip"]').tooltip();
+        
+
+        $(".check_icons").click(function(){  
+
+          var id_data = $(this).data('var1');
+
+          $.ajax({
+            type:'GET',
+            url: "{% url 'geticons' %}",
+            data: {"id_data":id_data},
+            success: function(response){ 
+                             
+              $('#modal_checkbuttons_title').html(`Button list - ID Data: ${id_data}`);
+
+              var html = "";
+		
+		$('.modal-body').css("height","180px");
+		if(response.icon_data.length > 3){
+			$('.modal-body').css("height","320px");
+		}
+
+              $.each(response.icon_data, function(index, icon){
+                  console.log(icon);
+                  html = html +  `<div class="col-sm-4 card" style="width:6rem;">
+                                  <img src="${icon.image}" class="card-img-top icon-image-modal" alt="${icon.tag}">
+                                  <div class="card-body">
+                                    <p class="card-text icon-text-modal">${icon.description}</p>
+                                  </div>
+                                  </div>`;
+              });              
+              $('#icon_content').html(html);            
+              $('#modal_checkbuttons').modal('show');
+            },
+            error: function(response){
+                console.log(response)
+            }
+          });            
+         
+        });
+	
+
+	 //Datatable
+        $('#table_data').DataTable({						
+				'responsive'	: true,
+				'paging'	: true,
+				'ordering'	: true,
+				'order'		: [],
+				'searching'	: true,
+				'info'		: true,
+				'colReorder'	: true,
+				'columns'	: [	{'orderable': false},
+                        				{'orderable': false},
+                        				null,
+                        				null,									
+                        				null,
+                        				null,
+                        				null,
+                        				null,
+                        				null,
+                        				{'orderable': false}
+						  ] 								
+	});
+
+     
+        ;(function ($) {
+            'use strict';
+          
+            //Defaults configuration
+            var defaults = {
+              url: null,
+              values: null,
+              method: "POST",
+              target: null,
+              traditional: false,
+              redirectTop: false
+            };
+          
+            /**
+            * jQuery Redirect
+            * @param {string} url - Url of the redirection
+            * @param {Object} values - (optional) An object with the data to send. If not present will look for values as QueryString in the target url.
+            * @param {string} method - (optional) The HTTP verb can be GET or POST (defaults to POST)
+            * @param {string} target - (optional) The target of the form. "_blank" will open the url in a new window.
+            * @param {boolean} traditional - (optional) This provides the same function as jquery's ajax function. The brackets are omitted on the field name if its an array.  This allows arrays to work with MVC.net among others.
+            * @param {boolean} redirectTop - (optional) If its called from a iframe, force to navigate the top window. 
+            *//**
+            * jQuery Redirect
+            * @param {string} opts - Options object
+            * @param {string} opts.url - Url of the redirection
+            * @param {Object} opts.values - (optional) An object with the data to send. If not present will look for values as QueryString in the target url.
+            * @param {string} opts.method - (optional) The HTTP verb can be GET or POST (defaults to POST)
+            * @param {string} opts.target - (optional) The target of the form. "_blank" will open the url in a new window.
+            * @param {boolean} opts.traditional - (optional) This provides the same function as jquery's ajax function. The brackets are omitted on the field name if its an array.  This allows arrays to work with MVC.net among others.
+            * @param {boolean} opts.redirectTop - (optional) If its called from a iframe, force to navigate the top window. 
+            */
+            $.redirect = function (url, values, method, target, traditional, redirectTop) {
+              console.log("redirect");
+              var opts = url;
+              if (typeof url !== "object") {
+                console.log("inside type");
+                var opts = {
+                  url: url,
+                  values: values,
+                  method: method,
+                  target: target,
+                  traditional: traditional,
+                  redirectTop: redirectTop
+                };
+              }
+          
+              var config = $.extend({}, defaults, opts);
+              var generatedForm = $.redirect.getForm(config.url, config.values, config.method, config.target, config.traditional);
+              $('body', config.redirectTop ? window.top.document : undefined).append(generatedForm.form);
+              generatedForm.submit();
+              generatedForm.form.remove();             
+            };
+          
+            $.redirect.getForm = function (url, values, method, target, traditional) {
+              method = (method && ["GET", "POST", "PUT", "DELETE"].indexOf(method.toUpperCase()) !== -1) ? method.toUpperCase() : 'POST';
+          
+              url = url.split("#");
+              var hash = url[1] ? ("#" + url[1]) : "";
+              url = url[0];
+          
+              if (!values) {
+                var obj = $.parseUrl(url);
+                url = obj.url;
+                values = obj.params;
+              }
+          
+              values = removeNulls(values);
+          
+              var form = $('<form>')
+                .attr("method", method)
+                .attr("action", url + hash);
+          
+          
+              if (target) {
+                form.attr("target", target);
+              }
+          
+              var submit = form[0].submit;
+              iterateValues(values, [], form, null, traditional);
+          
+              return { form: form, submit: function () { submit.call(form[0]); } };
+            }
+          
+            //Utility Functions
+              /**
+               * Url and QueryString Parser.
+               * @param {string} url - a Url to parse.
+               * @returns {object} an object with the parsed url with the following structure {url: URL, params:{ KEY: VALUE }}
+               */
+            $.parseUrl = function (url) {
+          
+              if (url.indexOf('?') === -1) {
+                return {
+                  url: url,
+                  params: {}
+                };
+              }
+              var parts = url.split('?'),
+                query_string = parts[1],
+                elems = query_string.split('&');
+              url = parts[0];
+          
+              var i, pair, obj = {};
+              for (i = 0; i < elems.length; i += 1) {
+                pair = elems[i].split('=');
+                obj[pair[0]] = pair[1];
+              }
+          
+              return {
+                url: url,
+                params: obj
+              };
+            };
+          
+            //Private Functions
+            var getInput = function (name, value, parent, array, traditional) {
+              var parentString;
+              if (parent.length > 0) {
+                parentString = parent[0];
+                var i;
+                for (i = 1; i < parent.length; i += 1) {
+                  parentString += "[" + parent[i] + "]";
+                }
+          
+                if (array) {
+                  if (traditional)
+                    name = parentString;
+                  else
+                    name = parentString + "[" + name + "]";
+                } else {
+                  name = parentString + "[" + name + "]";
+                }
+              }
+          
+              return $("<input>").attr("type", "hidden")
+                .attr("name", name)
+                .attr("value", value);
+            };
+          
+            var iterateValues = function (values, parent, form, isArray, traditional) {
+              var i, iterateParent = [];
+              Object.keys(values).forEach(function (i) {
+                if (typeof values[i] === "object") {
+                  iterateParent = parent.slice();
+                  iterateParent.push(i);
+                  iterateValues(values[i], iterateParent, form, Array.isArray(values[i]), traditional);
+                } else {
+                  form.append(getInput(i, values[i], parent, isArray, traditional));
+                }
+              });
+            };
+          
+            var removeNulls = function (values) {
+              var propNames = Object.getOwnPropertyNames(values);
+              for (var i = 0; i < propNames.length; i++) {
+                var propName = propNames[i];
+                if (values[propName] === null || values[propName] === undefined) {
+                  delete values[propName];
+                } else if (typeof values[propName] === 'object') {
+                  values[propName] = removeNulls(values[propName]);
+                } else if (values[propName].length < 1) {
+                  delete values[propName];
+                }
+              }
+              return values;
+            };
+        }(window.jQuery || window.Zepto || window.jqlite));
+          
+      });  
+  </script>
+
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+       <div class="col-sm-12 col-md-2 aside-style">        
+         <div class="row logo-section">
+         	{% if user.is_authenticated %}
+              		<div class="user_seccion">
+                 		<!-- <div><span class="user_style">Welcome {{user.username}}</span></div>-->
+                  		<div><span class="logout"><a href="/accounts/logout/?next=/table/">Logout  <i class="fa fa-sign-out"></i></a></span></div>
+              		</div>
+	      {% endif %}	
+		<div class="col-12 d-flex justify-content-center"><img class="logo_new" src="{% static 'images/logo.svg' %}" alt="logo_new"></div>
+	     <!-- <div class="col-12 d-flex justify-content-center"><img class="walky" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+	     <div class="col-12"> <h1 class="logo-title">Walkability</h1></div> --> 
+              <hr>
+         </div>
+         <div class="row search-section">
+              <div class="col-12 ">               
+                {% block buscador %}            
+                    <form class="navbar-search" method="GET">
+                        {% csrf_token %}
+			<div class="row mb-4">
+                          <div class="col-12">
+                              <button class="btn btn-extra btn-search" type="button" onclick="cleanData()">Clean Form <i class="fa fa-eraser"></i></button>
+                          </div>
+                       </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="user_option" class="form-label">Username with data</label>
+                                    <select class="form-select" name="user_option" id="user_option">
+                                        <option value="" selected>Choose a user...</option>   
+                                        {% for user in userlist%}
+                                            <option value="{{user.id}}" >{{user.username}}</option>   
+                                        {% endfor%}                                 
+                                    </select>
+                                </div>                               
+                            </div>                                                      
+                            <div class="col-12">                                
+                                <div class="form-group">
+                                  <label for="from_option" class="form-label">From Date</label>
+                                  <!--<input class="form-control" type="text" id="from_option" name="from_option">-->
+                                  <div class="input-group date" id="from_option" data-target-input="nearest">
+                                    <input type="text" id="from_opt" class="form-control datetimepicker-input" data-target="#from_option"/>
+                                    <div class="input-group-append" data-target="#from_option" data-toggle="datetimepicker">
+                                      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="to_option" class="form-label">To Date</label>
+                                    <!--<input class="form-control" type="text" id="to_option" name="to_option">-->
+                                    <div class="input-group date" id="to_option" data-target-input="nearest">
+                                      <input type="text" id="to_opt" class="form-control datetimepicker-input" data-target="#to_option"/>
+                                      <div class="input-group-append" data-target="#to_option" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                      </div>
+                                    </div>
+                                </div>                               
+                            </div>                            
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="perception_option" class="form-label">Perception</label>
+                                    <select class="form-select" name="perception_option" id="perception_option">
+                                        <option value="" selected>Choose a perception...</option> 
+                                        <option value="green" >Good</option> 
+                                        <option value="yellow" >Concern</option> 
+                                        <option value="red" >Problem</option>   
+                                                                    
+                                    </select>
+                                </div>
+                            </div>
+			     <div class="col-12">
+                              <div class="form-group">
+                                <label for="country_option" class="form-label">Country</label>
+                                <select class="form-select" name="country_option" id="country_option">
+                                    <option value="" selected>Choose a country...</option>
+                                    {% for c in countrylist %}
+                                      {% if c.name %}
+                                          <option value="{{c.iso2}}" >{{c.name}}</option>
+                                      {% endif %}
+                                    {% endfor%}
+                                </select>
+                              </div>
+                          </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-12">
+				    <!--<button class="btn btn-extra btn-search" type="button" onclick="cleanData()">Clean Form <i class="fa fa-eraser"></i></button><br>-->
+                                <button class="btn btn-extra btn-search" type="button" onclick="getData()">Search ></button>  <br>
+				<button id="csv_download" data-var0="{{opt}}" type="button" class="btn btn-extra btn-search" onclick="csvSelected2('{{ ids_data }}')" >Download dataset <i class="fa fa-download" aria-hidden="true"></i> </button>                                
+                            </div>   
+                        </div>            
+                    </form>            
+                {% endblock buscador %} 
+              </div>              
+          </div>
+          <div class="row footer-section">
+		  <!-- <div class="col-12 d-flex justify-content-center"><img class="walk21" src="{% static 'images/walk21.svg' %}" alt="walk21"></div> -->
+          </div>
+        
+       </div>
+       <div class="col-sm-12 col-md-10 main-style">
+           <div class="text-center"><h1 ><strong>Data points from Walks</strong></h1></div>            
+            <hr><br>
+            <div class="row instructions d-flex align-items-center">
+              <div class="col-sm-12 col-md-1 d-flex justify-content-center no-margin"><i class="fa fa-bullhorn fa-2x"></i></div>
+              <div class="col-sm-12 col-md-11 no-margin"><h6>Important Note: If you want to show all the dataset, you must clean the form fields before pressing the search button!</h6></div>
+            </div>
+            <div class="table-responsive mt-3">
+              <table id="table_data" class="table table-hover" style="width:100%;">
+                <thead class="header-colums">
+                  <tr class="header-title">
+                    <th class="hidden-column">#</th>
+                    <th>Data</th>
+                    <th>Walk</th>
+                    <th>User</th>
+                    <th>DateTime</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>City</th>
+                    <th>Perception</th>   
+                    <th class="text-center">Button</th>                        
+                    <!--<th>OPTIONS</th>-->
+                  </tr>      
+                </thead>
+                <tbody>
+                  {% for data in dataset %}
+                  <tr {% if data.perception == 'red' %}class="table-danger"{% endif %}{% if data.perception == 'yellow' %}class="table-warning"{% endif %}{% if data.perception == 'green' %}class="table-success"{% endif %}>
+                    <td class="hidden-column">
+                      <label class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" value="{{ data.id }}">
+                        <span class="custom-control-indicator"></span>
+                      </label>
+                    </td>
+                    <td>{{ data.id }}</td>   
+                    <td>Walk{{ data.walk_context }}</td>          
+                    <td>{{ data.user.username }}</td>
+                    <td>{{ data.datetime }}</td>
+                    <td>{{ data.latitude }}</td>
+                    <td>{{ data.longitude }}</td>
+                    <td>{{ data.city }}</td>
+                    {% if data.perception == 'green' %}
+                      <td>Good</td>
+                      {% elif data.perception == 'yellow' %}
+                      <td>Concern</td>
+                      {% elif data.perception == 'red' %}
+                      <td>Problem</td>
+                      {% else %}
+                      <td>{{data.perception}}</td>                      
+                    {% endif %}  
+                    <td style="text-align: center;">
+                      {% if data.cant_button > 1 %}
+                        <button type="button" class="btn btn-look check_icons" data-toggle="modal" data-var1="{{data.id}}" data-tooltip="tooltip" data-placement="top"  title="Check buttons"><i class="fa fa-search fa-lg"></i></button>
+                      {% elif data.cant_button == 1 %}
+                        {% for icon in data.icon_data %}
+                        <img class="icon-image" src="{{icon.image}}" alt="{{icon.tag}}" data-tooltip="tooltip" data-placement="top" title="{{icon.description}}">
+                        {%  endfor   %}
+                      {% else %}
+                      <img class="noicon-image" src="{% static 'images/no_data.svg' %}" alt="no_icon" data-tooltip="tooltip" data-placement="top" title="No icon found">
+                      {% endif %}  
+		   </td>                         
+                    <!--<td><a href="/table/?d={{ data.id }}"><button type="button" class="btn btn-danger">Delete</button></a></td>-->
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>             
+       </div>
+      
+    </div>
+  </div>     
+   <!-- Cargando -->
+		<div id="overlay-loader">
+      <div id="loader-img"><img id="walky-loader" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+			<div id="loader"></div>
+			<div id="loader-message"></div>
+		</div> 
+    <!-- Modal -->
+    <div class="modal fade" id="modal_checkbuttons" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable modal-md">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modal_checkbuttons_title"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="modal_checkbuttons_body">
+            <div class="container-fluid"><div id="icon_content" class='row d-flex justify-content-around'></div> </div>
+          </div>          
+        </div>
+      </div>
+    </div>
+
+  <script type="text/javascript">
+        $(function () {
+            $('#from_option').datetimepicker({
+                format: 'L'
+            });
+  
+            $('#to_option').datetimepicker({
+                format: 'L'
+            });
+        });
+    
+        function deleteSelected() {
+          var idList = new Array()
+          $(".custom-control-input:checked").each(function(){
+            idList.push($(this).val());
+          });
+          var comaSeparated = idList.join(",")
+          window.location.replace("/tabla0/?d=" + comaSeparated);
+        }
+        
+	function csvSelected(my_array) {  
+                
+          var clean = my_array.slice(1, my_array.length-1)
+          var clean_array = clean.replace(/ /g, "");
+          var opt = $('#csv_download').data('var0'); 
+
+          $.redirect("/csv/", {csv: clean_array, opt:opt}, "POST");                  
+        }
+
+        function csvSelected2(my_array) {  
+        //loading  
+          $('#overlay-loader').fadeIn('400');               
+          var clean = my_array.slice(1, my_array.length-1)
+          var clean_array = clean.replace(/ /g, "");
+          var opt = $('#csv_download').data('var0');
+          
+          $.ajax({
+            type:'POST',
+            url: "{% url 'csv_file' %}",
+            data: {"csv":clean_array, "opt": opt},
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(request){                              
+                var d = new Date();
+                var date_now = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDay()+"_"+d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds();
+                var a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                const blob = new Blob([request], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+                const url = URL.createObjectURL(blob);
+                a.href = url;
+                a.download = "Data-" + date_now + ".csv";
+                a.click();
+                window.URL.revokeObjectURL(url);
+                $('#overlay-loader').fadeOut('400');
+	            	console.log(request)
+            },
+            error: function(err){
+                console.log(err);
+            }
+	 }); 
+	}
+
+        function getData(){              
+          //loading
+            $('#overlay-loader').fadeIn('400');       
+            var user = $("#user_option").val();
+            var from = $("#from_opt").val();
+            var to = $("#to_opt").val();
+            var perception = $("#perception_option").val();
+	    var country =  $("#country_option option:selected").val();
+            
+	    $('#csv_download').data('var0','1');     
+            var search = user+'|'+from+'|'+to+'|'+perception+'|'+country;
+            window.location.replace("/table/?search=" + search + '&opt=1');
+
+	   /* setTimeout(() => {
+              window.location.replace("/table/?search=" + search);
+            }, "500")*/            
+        }  
+	
+	function cleanData(){          
+          $("#user_option").val('');
+          $("#from_opt").val('');
+          $("#to_opt").val('');
+          $("#perception_option").val('');
+	  $("#country_option").val('');
+        }
+        
+  </script>
+  
+</body>
+</html>

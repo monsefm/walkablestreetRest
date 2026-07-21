@@ -1,0 +1,40 @@
+{% load static %}
+<aside class="main-sidebar sidebar-light-primary elevation-1">
+    <a href="#" class="brand-link">
+        <img class="brand-image" src="{% static 'images/walky.svg' %}" alt="logo_new">
+        <h1 class="brand-text name">WalkableStreet</h1>       
+    </a>
+    <div class="sidebar" data-aos="fade-right">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image mt-1">
+                <i class="fas fa-user-circle fa-lg"></i>
+                <!--<img src="{{ request.user.get_image }}" class="img-circle" alt="User Image">-->
+            </div>
+            <div class="info">               
+                <a class="d-block">Welcome {{user.username}}</a>
+            </div>
+        </div>             
+        <nav class="mt-2">
+            <ul id="sidebar_menu" class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Maintenance</li>                
+                <li class="nav-item menu-option">
+                    <a href="{% url 'data_list' %}" class="nav-link" >
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <p>
+                            Data points
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item menu-option" >
+                    <a href="{% url 'user_list' %}" class="nav-link" >
+                        <i class="nav-icon fas fa-user-friends"></i>
+                        <p>
+                            Users
+                        </p>
+                    </a>
+                </li>
+            </ul>
+        </nav>        
+    </div>
+</aside>
+</div>

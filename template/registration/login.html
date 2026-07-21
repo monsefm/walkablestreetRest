@@ -1,0 +1,148 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WalkableStreet</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{%  static 'favicon.ico' %}">
+    <link rel="stylesheet" href="{% static 'css/style_login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}">
+    {% include '../include/libs.html' %}
+   
+    <!-- AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> 
+
+   
+    <script>
+      $(document).ready(function(){
+           AOS.init();
+          $("#username").val('');
+          $("#password").val('');         
+      });
+    </script>
+</head>
+<body>
+{% block content %}
+  <div class="container-fluid login_style"> 
+      <div class="row"> 
+        <div class="col_image col-sm-8">
+          <div class="col-12 main_div">
+            <h1 class="main-title">Administrative Login</h1>
+            <div class="line_xl"></div>  
+          </div>
+          <div class="col-12 img_div"> <img class="img-fluid" src="{% static 'images/panel.svg' %}" alt="img"></div>         
+        </div>  
+        <div class="col-sm-4 col_form" data-aos="fade-right"  data-aos-duration="900">
+          <img class="walky" src="{% static 'images/walky.svg' %}" alt="walky">
+          <h1 class="name">WalkableStreet</h1>
+          <div class="subtitle-box">
+            <h2 class="subtitle">Welcome</h2>
+            <div class="line"></div>            
+          </div>           
+              <form id="my_login" class="form-style" method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+                <input type="input" id="username" name="username" class="form-control" placeholder="Username" required/>
+                <input type="password" id="password" name="password"  class="form-control" placeholder="Password" required/>
+
+                <div class="feedback">                  
+                  {% if form.errors %}
+                  <p>Your username and password didn't match. Please try again.</p>
+                  {% endif %}
+                  
+                  {% if next %}
+                      {% if user.is_authenticated %}
+                      <p>Your account doesn't have access to this page. To proceed,
+                      please login with an account that has access.</p>  
+                      {% endif %}
+                  {% endif %}
+		              <p id="my_error"></p>		  
+                </div>
+                  
+                <div>
+                  <button class="btn-login" type="submit"> Login ></button>                 
+                  <input type="hidden" id="next" name="next" value="{{ next }}" />
+                </div>               
+              </form>                
+              <div class="footer_style text-center">                           
+                <!--<div style="display: inline;"><img class="logo-footer2" style="min-width:70px; max-width:130px; width:6.5vw;" src="https://walkability.cedeus.cl/img/alstom.2.png" alt="alstom"></div>
+                <div class="icon-space" style="display: inline;"><img class="logo-footer2" style="min-width:70px; max-width:130px; width:6.5vw;" src="https://walkability.cedeus.cl/img/walk21-01.png" alt="walk21"></div>-->
+                <div style="display: inline;"><img class="logo-footer2" style="min-width:70px; max-width:130px; width:6.5vw;" src="https://walkability.cedeus.cl/img/cedeus-01.png" alt="cedeus"></div>     
+              </div>
+        </div>    
+      </div>    
+  </div>
+  <!-- Cargando -->
+  <div id="overlay-loader">
+    <div id="loader-img"><img id="walky-loader" src="{% static 'images/walky.svg' %}" alt="walky"></div>
+    <div id="loader2"></div>
+     <div id="loader-message"></div>
+  </div>
+{% endblock %}   
+    <script type="text/javascript">
+      $("#my_login").submit(function(e){
+           
+          e.preventDefault();
+
+          var username = $("#username").val();
+          var password = $("#password").val();
+	        var next_value = $('#next').val();
+    
+           
+          if(username && password){
+          $.ajax({
+                    type:'POST',
+                    url: "{% url 'validate_login' %}",
+                    data: {username:username, password: password, next:next_value},
+                    success: function(response){ 
+                      if(response.status == 'success'){
+
+                        if(next_value == '/table/' || next_value == '/data_list/' || next_value == '/user_list/'){ $('#overlay-loader').fadeIn('400'); }                      	
+                        $('#my_error').html('');
+                    
+                        $.ajax({
+                          headers: {
+                              "X-CSRFToken": '{{csrf_token}}'
+                          },
+                          type:'POST',
+                          url: $('#my_login').attr('action'),
+                          data: $('#my_login').serialize(),                          
+                          success: function(response){
+                              $('#my_error').html('');
+                              $('#username').val('');
+                              $('#password').val('');
+                           // window.location = $('#next').val();
+			                      window.location.replace($('#next').val());  
+                          },
+                          error: function(error){                     
+                            console.log(error); 
+                            $('#my_error').html(error)                 
+                          },
+			                    finally: function(){
+                            $('#overlay-loader').fadeOut('400');    
+                          }
+
+                        })                          
+                      }
+                      else{
+                        $('#my_error').html(response.message)  
+                      }
+                      
+                    },
+                    error: function(response){                     
+                      console.log(response); 
+                      $('#my_error').html(response)                 
+                    }                    
+                });   
+              }
+      })
+    </script>
+</body>
+</html>
+
+
+
+
+

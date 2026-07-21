@@ -1,0 +1,1 @@
+from walkrest.wsgi import application

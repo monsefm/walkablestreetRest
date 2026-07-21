@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">   
+    <title>WalkableStreet Admin System</title>
+    <link rel="shortcut icon" type="image/x-icon" href="{%  static 'favicon.ico' %}">
+        
+       <!-- Font Awesome Icons -->
+       <link rel="stylesheet" href="{% static 'lib/plugins/fontawesome-5.15.3/css/all.min.css' %}">
+       <!-- Theme style -->
+       <link rel="stylesheet" href="{% static 'lib/adminlte-3.2.0/css/adminlte.min.css' %}">
+       <!-- Google Font: Raleway -->
+       <link href="https://fonts.googleapis.com/css?family=Raleway:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet"> 
+       <!-- jQuery -->
+       <script src="{% static 'lib/plugins/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
+       <!-- Bootstrap 4 -->
+       <script src="{% static 'lib/plugins/bootstrap-4.6.0/js/popper.min.js' %}"></script>
+       <script src="{% static 'lib/plugins/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
+       <!-- AdminLTE App -->
+       <script src="{% static 'lib/adminlte-3.2.0/js/adminlte.min.js' %}"></script>
+              
+       <!-- Jquery Confirm -->
+       <link rel="stylesheet" href="{% static 'lib/plugins/jquery-confirm-3.3.4/jquery-confirm.min.css' %}">
+       <script src="{% static 'lib/plugins/jquery-confirm-3.3.4/jquery-confirm.min.js' %}"></script>
+       <!-- Moment -->
+       <script src="{% static 'lib/plugins/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+       <script src="{% static 'lib/plugins/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>  
+
+       <!-- AOS -->
+       <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+       <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        
+        <!-- SweetAlert -->
+        <script src="{% static 'lib/plugins/sweetalert2-11.0.16/sweetalert2.css' %}"></script>
+        <script src="{% static 'lib/plugins/sweetalert2-11.0.16/sweetalert2.all.js' %}"></script>  
+
+       
+            
+        <!-- My css -->
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+        <!-- Functions -->
+        <script src="{% static 'js/main.js' %}"></script>  
+   
+    {% block head %}
+
+    {% endblock %}
+</head>
+<style>
+    *{
+        font-family: Raleway; 
+        font-style: normal;    
+        } 
+
+</style>
+{% block body %}
+
+{% endblock %}
+</html>

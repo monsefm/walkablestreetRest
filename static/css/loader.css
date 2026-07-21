@@ -1,0 +1,113 @@
+#overlay-loader{
+	position: fixed;
+	background-color: rgba(0,0,0,0.8);
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 9999;
+	display: none;
+}
+
+#overlay-loader2{
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 9999;
+	display: none;
+}
+
+#loader-img {
+	display:block;
+	position:absolute;
+	left:calc(50% - 25px);
+	top:calc(50% - 25px);
+	/*margin:-25px 0 0 -25px;*/
+}
+#walky-loader{
+	width:50px;
+	height:50px;
+}
+#loader {
+	display:block;
+	position:relative;
+	left:calc(50% - 60px);
+	top:calc(50% - 60px);
+	width:120px;
+	height:120px;
+	/*margin:-50px 0 0 -50px;*/
+	-webkit-border-radius:50%;
+	-moz-border-radius:50%;
+	border-radius:50%;
+	border:15px solid transparent;
+	border-top-color:#001968;
+	-webkit-animation:spin 1s linear infinite;
+	-moz-animation:spin 1s linear infinite;
+	-o-animation:spin 1s linear infinite;
+	animation:spin 1s linear infinite; 
+	z-index:1001
+}
+
+#loader2 {
+	display:block;
+	position:relative;
+	left:calc(50% - 60px);
+	top:calc(50% - 60px);
+	width:120px;
+	height:120px;
+	/*margin:-50px 0 0 -50px;*/
+	-webkit-border-radius:50%;
+	-moz-border-radius:50%;
+	border-radius:50%;
+	border:15px solid transparent;
+	border-top-color:#BC31EA;
+	-webkit-animation:spin 1s linear infinite;
+	-moz-animation:spin 1s linear infinite;
+	-o-animation:spin 1s linear infinite;
+	animation:spin 1s linear infinite;
+	z-index:1001
+}
+
+#loader-message {
+	display:block;
+	position: relative;
+	left: calc(50% - 110px);
+	top: calc(50% + 10px);
+	z-index:1002
+}
+
+
+@-webkit-keyframes spin {
+	0% {
+		-webkit-transform:rotate(0deg);
+		-ms-transform:rotate(0deg);
+		transform:rotate(0deg)
+	}
+	100% {
+		-webkit-transform:rotate(360deg);
+		-ms-transform:rotate(360deg);
+		transform:rotate(360deg)
+	}
+}
+@keyframes spin {
+	0% {
+		-webkit-transform:rotate(0deg);
+		-ms-transform:rotate(0deg);
+		transform:rotate(0deg)
+	}
+	100% {
+		-webkit-transform:rotate(360deg);
+		-ms-transform:rotate(360deg);
+		transform:rotate(360deg)
+	}
+}
+
+/*
+ <!-- Cargando -->
+		<div id="overlay-loader">
+      <div id="loader-img"><img id="walky-loader" src="svg location" alt="walky"></div>
+			<div id="loader"></div>
+			<div id="loader-message"></div>
+		</div> 
+*/
