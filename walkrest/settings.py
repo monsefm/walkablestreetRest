@@ -20,16 +20,19 @@ pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 #BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BIGDATA_KEY = 'bdc_3ae1782e651149f190107512ba39b081' #pass monse cuenta
+from dotenv import load_dotenv
+load_dotenv(os.path.join(BASE_DIR, '.env'))
+
+BIGDATA_KEY = os.getenv('BIGDATA_KEY', 'bdc_3ae1782e651149f190107512ba39b081') #pass monse cuenta
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+thkz@&&fs4x^6a*85z8ln%6ax7tmpahdd&u+!u&r2+h-5=-(4'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-+thkz@&&fs4x^6a*85z8ln%6ax7tmpahdd&u+!u&r2+h-5=-(4')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -56,16 +59,16 @@ CORS_ALLOW_HEADERS = [
 
 # Mail configuration
 #support@walkability.app (que redirecciona a w21wher@gmail.com)
-SUPPORT_TEAM = 'WalkableStreet app team'
-ADMIN_EMAIL = 'monse.fm@gmail.com'
-MAIL = 'walkabilityappinfo@gmail.com'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = MAIL
-EMAIL_HOST_PASSWORD = 'ejrigtvpnoawejjp'
-DEFAULT_FROM_EMAIL = 'WalkableStreet app <support@walkablestreet.app>'
+SUPPORT_TEAM = os.getenv('SUPPORT_TEAM', 'WalkableStreet app team')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL', 'monse.fm@gmail.com')
+MAIL = os.getenv('MAIL', 'walkabilityappinfo@gmail.com')
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', MAIL)
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'ejrigtvpnoawejjp')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'WalkableStreet app <support@walkablestreet.app>')
 
 # Application definition
 
@@ -159,12 +162,12 @@ DATABASES = {
     'default': {
        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
        # 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'lcieunvy_walkability',
-        'USER': 'lcieunvy_walkability',
-        'PASSWORD': 'Walkability',
-        'HOST': 'localhost',
-        'PORT': '3306',
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
+        'NAME': os.getenv('DB_NAME', 'lcieunvy_walkability'),
+        'USER': os.getenv('DB_USER', 'lcieunvy_walkability'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'Walkability'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '3306'),
     }
 }
 
